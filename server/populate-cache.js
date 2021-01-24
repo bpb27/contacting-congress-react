@@ -1,9 +1,12 @@
+const camelize = require('camelcase-keys');
+
 const populate = async (cache, db) => {
   console.time('populate cache');
+
   const [
     { rows: zips },
     { rows: states },
-    { rows: people },
+    { rows: legislators },
   ] = await Promise.all([
     db.query('SELECT * FROM zipcode_districts'),
     db.query('SELECT * FROM states'),
@@ -15,29 +18,34 @@ const populate = async (cache, db) => {
     [s.id]: s.abbreviation,
   }), {});
 
-  // zips should return an array, can be multiple districts
-  const cacheZips = zips.map(({ district, state_id, zipcode }) => ({
-    key: zipcode,
-    val: `${stateIdToAbbr[state_id]}-${district}`,
+  const zipToDistricts = zips.reduce((hash, { district, state_id, zipcode }) => {
+    const value = `${stateIdToAbbr[state_id]}-${district}`;
+    if (hash[zipcode]) hash[zipcode].push(value);
+    else hash[zipcode] = [value];
+    return hash;
+  }, {});
+
+  const cacheZipToDistricts = Object.keys(zipToDistricts).map(zip => ({
+    key: zip,
+    val: zipToDistricts[zip],
   }));
 
-  const cacheReps = people
-    .filter(p => p.type === 'rep')
-    .map(p => ({
-      key: `${p.state}-${p.district}`,
-      val: p,
-    }));
+  const cacheLegislators = {
+    key: 'legislators',
+    val: legislators.map(camelize),
+  };
 
-  const cacheSens = states
-    .map(s => ({
-      key: s.abbreviation,
-      val: people.filter(p => p.type === 'sen' && p.state === s.abbreviation),
-    }));
+  const cacheStates = {
+    key: 'states',
+    val: states.map(camelize),
+  };
 
-  const success1 = cache.mset(cacheZips);
-  const success2 = cache.mset(cacheReps);
-  const success3 = cache.mset(cacheSens);
-  console.log(success1, success2, success3);
+  cache.mset([
+    cacheZipToDistricts,
+    cacheLegislators,
+    cacheStates
+  ].flat());
+
   console.timeEnd('populate cache');
 };
 

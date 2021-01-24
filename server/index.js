@@ -9,8 +9,12 @@ const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
 const NodeCache = require('node-cache');
-const { Pool } = require('pg');
+const { Pool, types } = require('pg');
 const populateCache = require('./populate-cache');
+const setupGraphQL = require('./graphql');
+
+// prevent pg from translating to JS date
+types.setTypeParser(types.builtins.DATE, date => date);
 
 const app = express();
 const port = PORT || 3000;
@@ -26,6 +30,7 @@ const pool = new Pool({
 });
 
 populateCache(cache, pool);
+setupGraphQL({ app, cache, pool });
 
 // security headers
 app.use(sslRedirect());
@@ -52,16 +57,6 @@ if (!isProd) app.use(cors());
 // health check route
 app.get('/ping', (req, res) => {
   res.send('pong');
-});
-
-app.get('/zips/:zip', cors(), async (req, res) => {
-  const zipcode = req.params.zip.replace(/[^\d.-]/g, '').slice(0, 5);
-  const district = cache.get(zipcode);
-  const state = district.split('-')[0];
-  res.json({
-    rep: cache.get(district),
-    sens: cache.get(state),
-  });
 });
 
 // deliver react app for all other routes
