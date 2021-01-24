@@ -53,6 +53,8 @@
     "webpack-md5-hash": "0.0.6"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.7",
+    "graphql": "^15.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
