@@ -17,3 +17,9 @@
 ### Sources
 Zipcode to congressional district (ZIP-CD):
 https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+
+Reps:
+https://github.com/unitedstates/congress-legislators
+- delete middle_name, suffix, nickname, senate_class_id, fec_ids, rss, washington_post
+- remove all commas (mostly around suffixes)
+- upload to postico

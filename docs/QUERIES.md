@@ -1,22 +1,57 @@
-add states:
+### Create legislators table
+
+```sql
+CREATE TABLE "public"."legislators" (
+  "id" serial,
+  "last_name" text NOT NULL,
+  "first_name" text NOT NULL,
+  "middle_name" text,
+  "suffix" text,
+  "nickname" text,
+  "full_name" text NOT NULL,
+  "birthday" date NOT NULL,
+  "gender" text,
+  "type" varchar(3) NOT NULL,
+  "state" varchar(2) NOT NULL,
+  "district" integer,
+  "party" text,
+  "url" text,
+  "address" text,
+  "phone" text,
+  "contact_form" text,
+  "twitter" text,
+  "facebook" text,
+  "youtube" text,
+  "youtube_id" text,
+  "bioguide_id" text,
+  "thomas_id" text,
+  "opensecrets_id" text,
+  "lis_id" text,
+  "cspan_id" text,
+  "govtrack_id" text,
+  "votesmart_id" text,
+  "ballotpedia_id" text,
+  "wikipedia_id" text,
+  PRIMARY KEY ("id")
+);
+```
+
+### Create states table
 
 ```sql
 INSERT INTO
-  states (name, abbr)
+  states (name, abbreviation)
 VALUES
   ('Alabama', 'AL'),
   ('Alaska', 'AK'),
-  ('American Samoa', 'AS'),
   ('Arizona', 'AZ'),
   ('Arkansas', 'AR'),
   ('California', 'CA'),
   ('Colorado', 'CO'),
   ('Connecticut', 'CT'),
   ('Delaware', 'DE'),
-  ('District of Columbia', 'DC'),
   ('Florida', 'FL'),
   ('Georgia', 'GA'),
-  ('Guam', 'GU'),
   ('Hawaii', 'HI'),
   ('Idaho', 'ID'),
   ('Illinois', 'IL'),
@@ -26,7 +61,6 @@ VALUES
   ('Kentucky', 'KY'),
   ('Louisiana', 'LA'),
   ('Maine', 'ME'),
-  ('Marshall Islands', 'MH'),
   ('Maryland', 'MD'),
   ('Massachusetts', 'MA'),
   ('Michigan', 'MI'),
@@ -46,7 +80,6 @@ VALUES
   ('Oklahoma', 'OK'),
   ('Oregon', 'OR'),
   ('Pennsylvania', 'PA'),
-  ('Puerto Rico', 'PR'),
   ('Rhode Island', 'RI'),
   ('South Carolina', 'SC'),
   ('South Dakota', 'SD'),
@@ -55,9 +88,8 @@ VALUES
   ('Utah', 'UT'),
   ('Vermont', 'VT'),
   ('Virginia', 'VA'),
-  ('Virgin Islands', 'VI'),
   ('Washington', 'WA'),
   ('West Virginia', 'WV'),
   ('Wisconsin', 'WI'),
-  ('Wyoming', 'WY'),
+  ('Wyoming', 'WY');
 ```
