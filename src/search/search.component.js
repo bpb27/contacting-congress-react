@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import { GET_LEGISLATORS } from '../api';
 import { states } from '../constants';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  makeStyles,
+} from '@material-ui/core';
 import styled from 'styled-components';
 
 const Container = styled.div``;
@@ -21,23 +24,29 @@ const useStyles = makeStyles(() => ({
 
 const Search = () => {
   const classes = useStyles();
-  // useReducer
-  const [zipCode, setZipCode] = useState('');
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [party, setParty] = useState('');
-  const [usState, setUsState] = useState('');
+  const history = useHistory();
+  const queryParams = new URLSearchParams(history.location.search);
+  const [chamber, setChamber] = useState(queryParams.get('chamber') || '');
+  const [gender, setGender] = useState(queryParams.get('gender') || '');
+  const [name, setName] = useState(queryParams.get('name') || '');
+  const [party, setParty] = useState(queryParams.get('party') || '');
+  const [usState, setUsState] = useState(queryParams.get('state') || '');
+  const [zipCode, setZipCode] = useState(queryParams.get('zipCode') || '');
   const { error, data, loading, refetch } = useQuery(GET_LEGISLATORS);
 
   useEffect(() => {
-    refetch({
+    const params = {
+      chamber: chamber || null,
       gender: gender || null,
       name: name || null,
       party: party || null,
       state: usState || null,
       zipCode: zipCode.length === 5 ? zipCode : null,
-    });
-  }, [gender, name, party, usState, zipCode]);
+    };
+
+    history.push({ search: toQueryParams(params) });
+    refetch(params);
+  }, [chamber, gender, name, party, usState, zipCode]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong...</p>;
@@ -74,6 +83,20 @@ const Search = () => {
           <MenuItem value="">Any</MenuItem>
           <MenuItem value="female">Female</MenuItem>
           <MenuItem value="male">Male</MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl className={classes.formControl}>
+        <InputLabel id="chamber-label">Chamber</InputLabel>
+        <Select
+          labelId="chamber-label"
+          id="chamber"
+          label="Gender"
+          onChange={ev => setChamber(ev.target.value)}
+          value={chamber}
+        >
+          <MenuItem value="">Any</MenuItem>
+          <MenuItem value="house">House</MenuItem>
+          <MenuItem value="senate">Senate</MenuItem>
         </Select>
       </FormControl>
       <FormControl className={classes.formControl}>
@@ -121,6 +144,13 @@ const formatName = ({ chamber, fullName }) => (
 
 const formatDistrict = ({ district, state }) => (
   district ? `${state}-${district}` : state
+);
+
+const toQueryParams = params => (
+  Object.keys(params)
+    .filter(key => params[key])
+    .map(key => encodeURI(`${key}=${params[key]}`))
+    .join('&')
 );
 
 export default Search;

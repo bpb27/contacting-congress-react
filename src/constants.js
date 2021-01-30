@@ -1,7 +1,7 @@
 export const API_URL = localStorage.isDev ? (
   'http://localhost:3000'
 ) : (
-  'https://contacting-congress.herokuapp.com/'
+  'https://contacting-congress.herokuapp.com'
 );
 
 export const states = [

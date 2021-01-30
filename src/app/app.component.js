@@ -1,4 +1,5 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { BrowserRouter } from 'react-router-dom';
 import Search from 'components/search';
 import { API_URL } from '../constants';
 import styled from 'styled-components';
@@ -13,11 +14,13 @@ const Container = styled.div`
 `;
 
 const App = () => (
-  <ApolloProvider client={client}>
-    <Container>
-      <Search/>
-    </Container>
-  </ApolloProvider>
+  <BrowserRouter>
+    <ApolloProvider client={client}>
+      <Container>
+        <Search/>
+      </Container>
+    </ApolloProvider>
+  </BrowserRouter>
 );
 
 export default App;
