@@ -1,7 +1,7 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import styled from 'styled-components';
 import Search from 'components/search';
 import { API_URL } from '../constants';
+import styled from 'styled-components';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -9,7 +9,7 @@ const client = new ApolloClient({
 });
 
 const Container = styled.div`
-  font-family: monospace;
+  font-family: 'Roboto';
 `;
 
 const App = () => (

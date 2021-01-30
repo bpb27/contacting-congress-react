@@ -17,10 +17,11 @@ export const GET_LEGISLATORS = gql`
       state: $state
       zipCode: $zipCode
     ) {
+      chamber
+      district
       fullName
       id
       party
-      chamber
       state
     }
   }
